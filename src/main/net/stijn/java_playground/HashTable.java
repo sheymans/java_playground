@@ -36,7 +36,8 @@ public class HashTable {
         int indexInArray = hash % this.table.length;
         List<String> listOnIndex = this.table[indexInArray];
         if (Objects.isNull(listOnIndex)) {
-            List<String> newList = List.of(value);
+            List<String> newList = new LinkedList<>();
+            newList.add(value);
             this.table[indexInArray] = newList;
         } else {
             listOnIndex.add(value);
@@ -70,5 +71,27 @@ public class HashTable {
      */
     public int hash(@NonNull String key) {
         return key.hashCode();
+    }
+
+    /**
+     * Overrides the toString for pretty-printing.
+     *
+     * @return pretty-printed {@link String} of HashTable. For example, something like
+     * {@code 0: empty | 1: empty | 2: [value1] | }
+     */
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < this.table.length; ++i) {
+            List<String> valueList = this.table[i];
+            String valueListRepresentation = "empty";
+            if (Objects.nonNull(valueList)) {
+                valueListRepresentation = valueList.toString();
+            }
+
+            builder.append(i);
+            builder.append(": " + valueListRepresentation + " | ");
+        }
+        return builder.toString();
     }
 }
