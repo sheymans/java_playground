@@ -1,6 +1,7 @@
 package net.stijn.java_playground;
 
 import lombok.NonNull;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,9 +13,10 @@ import java.util.Optional;
  */
 public class HashTable {
     /**
-     * Array of LinkedList to store table in.
+     * Array of LinkedList of Pairs to store table in. Pairs cause it could be that you're storing different keys
+     * in the same list (when hash of key is same).
      */
-    private List<String>[] table;
+    private List<Pair<String, String>>[] table;
 
     /**
      * Constructor.
@@ -34,13 +36,13 @@ public class HashTable {
     public void put(@NonNull String key, @NonNull String value) {
         int hash = this.hash(key);
         int indexInArray = hash % this.table.length;
-        List<String> listOnIndex = this.table[indexInArray];
+        List<Pair<String, String>> listOnIndex = this.table[indexInArray];
         if (Objects.isNull(listOnIndex)) {
-            List<String> newList = new LinkedList<>();
-            newList.add(value);
+            List<Pair<String,String>> newList = new LinkedList<>();
+            newList.add(Pair.of(key, value));
             this.table[indexInArray] = newList;
         } else {
-            listOnIndex.add(value);
+            listOnIndex.add(Pair.of(key, value));
         }
     }
 
@@ -53,14 +55,13 @@ public class HashTable {
     public Optional<String> get(@NonNull String key) {
         int hash = this.hash(key);
         int indexInArray = hash % this.table.length;
-        List<String> listOnIndex = this.table[indexInArray];
-        int found = listOnIndex.indexOf(key);
-        if (found < 0) {
-            return Optional.empty();
-        } else {
-            String foundValue = listOnIndex.get(found);
-            return Optional.of(foundValue);
-        }
+
+        List<Pair<String, String>> listOnIndex = this.table[indexInArray];
+        Optional<String> found = listOnIndex.stream()
+                .filter(pair -> key.equals(pair.getLeft()))
+                .map(Pair::getRight)
+                .findFirst();
+        return found;
     }
 
     /**
@@ -83,7 +84,7 @@ public class HashTable {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < this.table.length; ++i) {
-            List<String> valueList = this.table[i];
+            List<Pair<String,String>> valueList = this.table[i];
             String valueListRepresentation = "empty";
             if (Objects.nonNull(valueList)) {
                 valueListRepresentation = valueList.toString();
