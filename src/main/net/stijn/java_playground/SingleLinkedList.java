@@ -49,4 +49,29 @@ public class SingleLinkedList<V> {
             return Optional.of(this.root.value());
         }
     }
+
+    /**
+     * Finds the first value in the list and returns the index that it found it, or -1 if not found.
+     *
+     * @param v the value to find in list
+     * @return the first index it finds v at, or -1 if it is not present.
+     */
+    public int find(@NonNull V v) {
+        Node<V> current = this.root;
+        int foundIndex = 0;
+
+        while (!Objects.isNull(current)) {
+            if (current.value().equals(v)) {
+                return foundIndex;
+            }
+            current = current.next();
+            ++foundIndex;
+        }
+
+        return -1;
+    }
+
+    public void delete(@NonNull V v) {
+        // TODO
+    }
 }
