@@ -13,5 +13,4 @@ class NodeTest {
         Node root = new Node("a", new Node[]{leaf1, leaf2});
         assertEquals("a", root.getValue());
     }
-    }
 }
