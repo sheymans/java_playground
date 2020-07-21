@@ -14,11 +14,19 @@ public class MinHeapNode {
     private int value;
     private MinHeapNode left;
     private MinHeapNode right;
+    // Since adding/removing elements from MinHeap requires bubbling up and down, it's useful to keep the parent
+    private MinHeapNode parent = null;
 
     public MinHeapNode(int value, MinHeapNode left, MinHeapNode right) {
         this.value = value;
         this.left = left;
         this.right = right;
+        if (Objects.nonNull(left)) {
+            this.left.parent = this;
+        }
+        if (Objects.nonNull(right)) {
+            this.right.parent = this;
+        }
     }
 
     /**
@@ -52,9 +60,40 @@ public class MinHeapNode {
 
         // Both children are non-null:
         if (Objects.nonNull(this.right) && Objects.nonNull(this.left)) {
-            return this.value <= this.left.value && this.value <= this.right.value;
+            boolean localMinHeap = this.value <= this.left.value && this.value <= this.right.value;
+            if (!localMinHeap) {
+                return false;
+            }
+            // Each node has to satisfy the property:
+            boolean leftMinHeap = this.left.satisfiesMinHeapProperty();
+            if (!leftMinHeap) {
+                return false;
+            }
+
+            boolean rightMinHeap = this.right.satisfiesMinHeapProperty();
+            return rightMinHeap;
         }
 
         return false;
+    }
+
+    /**
+     * Removes minimum from heap.
+     *
+     * @return minimum if it exists.
+     */
+    public int popMin() {
+        // in a heap the root has the minimum value.
+        int min = this.value;
+
+        // TODO
+
+        return min;
+    }
+
+    private MinHeapNode getLastNodeinHeap() {
+        // TODO
+
+        return null;
     }
 }
