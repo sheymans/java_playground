@@ -4,6 +4,8 @@ import lombok.Getter;
 
 import java.util.Objects;
 
+import static java.lang.Math.max;
+
 /**
  * A MinHeap, implemented just as MinHeapNode to avoid doing all the unnecessary wrapping (with Nodes as inner classes).
  * <p>
@@ -21,6 +23,7 @@ public class MinHeapNode {
         this.value = value;
         this.left = left;
         this.right = right;
+
         if (Objects.nonNull(left)) {
             this.left.parent = this;
         }
@@ -91,9 +94,84 @@ public class MinHeapNode {
         return min;
     }
 
-    private MinHeapNode getLastNodeinHeap() {
-        // TODO
+    /**
+     * Give the tail of the this node, i.e., the node to which you would add either a left or right node to maintain completeness of this node.
+     *
+     * Recall that a complete tree is a tree with each level filled except possibly the last one, which is filled from
+     * left to right.
+     *
+     * @return the {@link MinHeapNode} to which to add the last element.
+     *
+     */
+    protected MinHeapNode getTail() {
+        if (this.isLeaf()) {
+            return this;
+        }
 
-        return null;
+        if (Objects.isNull(this.right) && Objects.nonNull(this.left)) {
+            return this;
+        }
+
+        if (Objects.nonNull(this.right) && Objects.nonNull(this.left)) {
+            MinHeapNode candidate1 = this.left.getTail();
+            if (Objects.isNull(this.parent)) {
+                return candidate1;
+            }
+            if (Objects.isNull(this.parent.right)) {
+                // impossible would mean the tree is not complete
+                throw new IllegalStateException();
+            }
+            MinHeapNode candidate2 = this.parent.right.getTail();
+            if (candidate1.getDepth() < candidate2.getDepth()) {
+                return candidate1;
+            } else {
+                return candidate2;
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Calculates the depth of this node.
+     *
+     * @return the max depth of the left and right tree + 1
+     */
+    protected int getDepth() {
+        int leftDepth = 0;
+        int rightDepth = 0;
+
+        if (this.isLeaf()) {
+            return 0;
+        }
+
+        if (Objects.nonNull(this.left)) {
+            leftDepth = this.left.getDepth();
+        }
+        if (Objects.nonNull(this.right)) {
+            rightDepth = this.right.getDepth();
+        }
+
+        int maxSubTreeDepth = max(leftDepth, rightDepth);
+        return maxSubTreeDepth + 1;
+    }
+
+    /**
+     * Add a leaf in the right location to ensure the tree stays complete.
+     *
+     * @param value the value of the lead node to add.
+     */
+    protected void addLeaf(int value) {
+        MinHeapNode node = new MinHeapNode(value, null, null);
+        MinHeapNode tail = this.getTail();
+
+        if (Objects.isNull(tail.left)) {
+            tail.left = node;
+            node.parent = tail.left;
+        }
+        if (Objects.isNull(tail.right)) {
+            tail.right = node;
+            node.parent = tail.right;
+        }
     }
 }
