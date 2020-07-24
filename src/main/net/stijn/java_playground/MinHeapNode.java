@@ -85,13 +85,23 @@ public class MinHeapNode {
      *
      * @return minimum if it exists.
      */
-    public int popMin() {
+    public int pop() {
         // in a heap the root has the minimum value.
         int min = this.value;
 
         // TODO
 
         return min;
+    }
+
+    /**
+     * Add a value by adding it as a leaf and then bubbling it up (as in min heap).
+     *
+     * @param value the value to add
+     */
+    public void add(int value) {
+        MinHeapNode added = this.addLeaf(value);
+        this.bubbleUp(added);
     }
 
     /**
@@ -160,18 +170,51 @@ public class MinHeapNode {
      * Add a leaf in the right location to ensure the tree stays complete.
      *
      * @param value the value of the lead node to add.
+     *
+     * @return the leaf node that was added
      */
-    protected void addLeaf(int value) {
+    protected MinHeapNode addLeaf(int value) {
         MinHeapNode node = new MinHeapNode(value, null, null);
         MinHeapNode tail = this.getTail();
 
         if (Objects.isNull(tail.left)) {
             tail.left = node;
-            node.parent = tail.left;
+            node.parent = tail;
+            return node;
         }
         if (Objects.isNull(tail.right)) {
             tail.right = node;
-            node.parent = tail.right;
+            node.parent = tail;
+            return node;
         }
+
+        return node;
+    }
+
+    /**
+     * Bubble up the node to make sure the min heap property remains satisfied.
+     *
+     * @param node the node to bubble up (note that we only bubble up the values, we keep the tree structure).
+     */
+    protected void bubbleUp(MinHeapNode node) {
+        // we have the root:
+        if (Objects.isNull(node.parent)) {
+            return;
+        }
+
+        MinHeapNode parent = node.parent;
+        int parentValue = parent.getValue();
+        int nodeValue = node.getValue();
+
+        // All good, the parent is smaller than the child
+        if (parentValue <= nodeValue) {
+            return;
+        }
+
+        // Swap parent and node
+        node.value = parentValue;
+        parent.value = nodeValue;
+        // and bubble up
+        this.bubbleUp(parent);
     }
 }
