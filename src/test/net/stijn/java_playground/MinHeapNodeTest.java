@@ -95,4 +95,25 @@ class MinHeapNodeTest {
         assertEquals(2, root.getValue());
     }
 
+    @Test
+    void pop() {
+        MinHeapNode root = new MinHeapNode(4, null, null);
+        root.add(2);
+        root.add(3);
+        root.add(50);
+
+        assertTrue(root.satisfiesMinHeapProperty());
+        assertEquals(2, root.pop());
+        assertTrue(root.satisfiesMinHeapProperty());
+        assertEquals(3, root.pop());
+        assertTrue(root.satisfiesMinHeapProperty());
+        assertEquals(4, root.pop());
+        assertTrue(root.satisfiesMinHeapProperty());
+        assertEquals(50, root.getValue());
+
+        root.add(1);
+        assertTrue(root.satisfiesMinHeapProperty());
+        assertEquals(1, root.pop());
+        assertTrue(root.satisfiesMinHeapProperty());
+    }
 }

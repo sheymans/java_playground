@@ -2,12 +2,17 @@ package net.stijn.java_playground;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static java.lang.Math.max;
 
 /**
  * A MinHeap, implemented just as MinHeapNode to avoid doing all the unnecessary wrapping (with Nodes as inner classes).
+ *
+ * Conclusion of implementing a MinHeapNode like this: DON'T DO IT. An implementation based on Arrays where you encode
+ * the tree in an array is simpler.
+ *
  * <p>
  * Recall that a MinHeap is a complete binary tree where every node is smaller than its children.
  */
@@ -18,6 +23,8 @@ public class MinHeapNode {
     private MinHeapNode right;
     // Since adding/removing elements from MinHeap requires bubbling up and down, it's useful to keep the parent
     private MinHeapNode parent = null;
+    // use as stack (so we can always get the last added node)
+    final private ArrayList<MinHeapNode> childrenAddedInOrder = new ArrayList<>();
 
     public MinHeapNode(int value, MinHeapNode left, MinHeapNode right) {
         this.value = value;
@@ -88,8 +95,27 @@ public class MinHeapNode {
     public int pop() {
         // in a heap the root has the minimum value.
         int min = this.value;
+        if (this.childrenAddedInOrder.isEmpty()) {
+            // you've added nothing, this is the only node.
+            // that's a bit weird, as things should evaporate
+            // let's not do anything; consider throwing an exception
+            return min;
+        }
 
-        // TODO
+        int indexOfLastAdded = childrenAddedInOrder.size() - 1;
+        MinHeapNode lastAdded = this.childrenAddedInOrder.get(indexOfLastAdded);
+        this.value = lastAdded.value;
+        // remove lastAdded from the tree
+        MinHeapNode parent = lastAdded.parent;
+        if (Objects.nonNull(parent)) {
+            if (lastAdded.equals(parent.right)) {
+                parent.right = null;
+            } else {
+                parent.left = null;
+            }
+        }
+        this.childrenAddedInOrder.remove(indexOfLastAdded);
+        this.bubbleDown(this);
 
         return min;
     }
@@ -101,6 +127,7 @@ public class MinHeapNode {
      */
     public void add(int value) {
         MinHeapNode added = this.addLeaf(value);
+        this.childrenAddedInOrder.add(added);
         this.bubbleUp(added);
     }
 
@@ -216,5 +243,53 @@ public class MinHeapNode {
         parent.value = nodeValue;
         // and bubble up
         this.bubbleUp(parent);
+    }
+
+    /**
+     * Bubble down the node.
+     *
+     * @param node the node to bubble down (the value of the node)
+     */
+    protected void bubbleDown(MinHeapNode node) {
+        // we have a leaf, so done bubbling
+        if (node.isLeaf()) {
+            return;
+        }
+
+        int valueToBubble = node.value;
+
+        MinHeapNode left = node.left;
+        MinHeapNode right = node.right;
+
+        if (Objects.isNull(right)) {
+            // left can't be null otherwise it's a leaf which we catch before
+            if (valueToBubble <= left.value) {
+                // all in place
+                return;
+            }
+            node.value = left.value;
+            left.value = valueToBubble;
+            this.bubbleDown(left);
+            return;
+        }
+
+        // both left and right are non-null
+        if (left.value < valueToBubble && left.value <= right.value) {
+            // bubble down left
+            node.value = left.value;
+            left.value = valueToBubble;
+            this.bubbleDown(left);
+            return;
+        }
+
+        if (right.value < valueToBubble && right.value <= left.value) {
+            // bubble down right
+            node.value = right.value;
+            right.value = valueToBubble;
+            this.bubbleDown(right);
+            return;
+        }
+
+        // don't bubble, things are in place
     }
 }
