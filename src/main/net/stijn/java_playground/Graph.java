@@ -2,9 +2,8 @@ package net.stijn.java_playground;
 
 import lombok.NonNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class Graph {
@@ -44,12 +43,32 @@ public class Graph {
      * @return an non-empty {@link Optional} if the node satisfying the predicate is true, an empty Optional otherwise.
      */
     public Optional<Node> dfs(Predicate<Node> predicate) {
+        Set<Node> visited = new HashSet<>();
         for (Node node: this.nodes) {
-            Optional<Node> found = node.dfs(predicate);
+            Optional<Node> found = node.dfs(predicate, visited);
             if (found.isPresent()) {
                 return found;
             }
         }
         return Optional.empty();
     }
+
+    /**
+     * Breadth first search on the graph.
+     *
+     * @param predicate the predicate to test for truth.
+     * @return an non-empty {@link Optional} if the node satisfying the predicate is true, an empty Optional otherwise
+     */
+    public Optional<Node> bfs(Predicate<Node> predicate) {
+        Set<Node> visited = new HashSet<>();
+        for (Node node: this.nodes) {
+            Optional<Node> found = node.bfs(predicate, visited);
+            if (found.isPresent()) {
+                return found;
+            }
+        }
+        return Optional.empty();
+    }
+
+    // TODO generalize above to a `find` with a strategy.
 }
