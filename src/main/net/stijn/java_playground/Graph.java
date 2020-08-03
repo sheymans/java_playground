@@ -5,6 +5,7 @@ import lombok.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class Graph {
 
@@ -34,5 +35,21 @@ public class Graph {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Depth first search on the graph, just goes through its list of nodes and does a Node DFS on them.
+     *
+     * @param predicate the predicate to test for truth.
+     * @return an non-empty {@link Optional} if the node satisfying the predicate is true, an empty Optional otherwise.
+     */
+    public Optional<Node> dfs(Predicate<Node> predicate) {
+        for (Node node: this.nodes) {
+            Optional<Node> found = node.dfs(predicate);
+            if (found.isPresent()) {
+                return found;
+            }
+        }
+        return Optional.empty();
     }
 }
