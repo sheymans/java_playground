@@ -22,4 +22,24 @@ public class Sort {
         }
         return true;
     }
+
+    /**
+     * Bubble sorts an array. With each pass through array, move largest element to back (each pass goes over less and less elements).
+     *
+     * @param array the array to bubble sort.
+     */
+    public static void bubbleSort(int[] array) {
+        int last = array.length - 1;
+        while (last > 0) {
+            for (int i = 0; i < last; ++i) {
+                int j = i + 1;
+                int swap = array[j];
+                if (array[i] > array[j]) {
+                    array[j] = array[i];
+                    array[i] = swap;
+                }
+            }
+            --last;
+        }
+    }
 }
