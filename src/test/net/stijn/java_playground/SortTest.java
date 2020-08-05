@@ -27,4 +27,18 @@ class SortTest {
         Sort.bubbleSort(c);
         assertTrue(Sort.isSorted(c));
     }
+
+    @Test
+    void selectionSort() {
+        int[] a = {1, 2, 3, 6, 8};
+        Sort.selectionSort(a);
+        assertTrue(Sort.isSorted(a));
+        int[] b = {1, 2, 3, 6, 5};
+        assertFalse(Sort.isSorted(b));
+        Sort.selectionSort(b);
+        assertTrue(Sort.isSorted(b));
+        int[] c = {5, 4, 3, 2, 1};
+        Sort.selectionSort(c);
+        assertTrue(Sort.isSorted(c));
+    }
 }

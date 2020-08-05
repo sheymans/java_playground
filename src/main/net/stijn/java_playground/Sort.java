@@ -42,4 +42,33 @@ public class Sort {
             --last;
         }
     }
+
+    /**
+     * Selection sort. Linear scan the list for the smallest element and move that to front.
+     * Then do the same iteratively for everything but the front.
+     * Note that this sorts in place by each time swapping out smallest element with front.
+     *
+     * @param array the array to sort.
+     */
+    public static void selectionSort(int[] array) {
+        int start = 0;
+        while (start < array.length  - 1) {
+
+            // find the smallest element in the list after start.
+            int currentMinIndex = start;
+            for (int i = start + 1; i < array.length; ++i) {
+                if (array[i] < array[currentMinIndex]) {
+                    currentMinIndex = i;
+                }
+            }
+
+            // after that for-loop we have found the smallest element in the array _after_ start, so swap that.
+            int swap = array[currentMinIndex];
+            array[currentMinIndex] = array[start];
+            array[start] = swap;
+
+            // now that we moved the smallest element to start, continue with the remainder of the list (again move smallest to front of that sublist).
+            ++start;
+        }
+    }
 }
