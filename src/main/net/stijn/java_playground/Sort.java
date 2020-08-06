@@ -71,4 +71,70 @@ public class Sort {
             ++start;
         }
     }
+
+    /**
+     * Merge sort on array. Uses O(n log n) in runtime; and O(n) in space as we make a helper copy.
+     *
+     * @param array the array to merge sort.
+     */
+    public static void mergeSort(int[] array) {
+        int[] helper = new int[array.length]; // we could create this later (in merge, but then we'd have to create it too many times, now
+        // we reuse an array that is big enough.
+        mergeHelp(array, helper,0, array.length - 1);
+    }
+
+    private static void mergeHelp(int[] array, int[] helper, int start, int end) {
+        if (end <= start) {
+            return;
+        }
+
+        int mid = (start + end) / 2;
+        mergeHelp(array, helper, start, mid);
+        mergeHelp(array, helper,mid + 1, end);
+        merge(array, helper, start, mid, end);
+    }
+
+    private static void merge(int[] array, int[] helper, int start, int mid, int end) {
+        // move everything into helper, so you can overwrite array with the right sorting (the merged sort)
+        for (int i = start; i <= end; ++i) {
+            helper[i] = array[i];
+        }
+
+        // now start merging
+        int arrayIndex = start;
+        int firstIndex = start;
+        int secondIndex = mid + 1;
+
+        // go through first part; once we're done with this, we know that everything remaining in the second part is
+        // already sorted.
+        while (firstIndex <= mid && secondIndex <= end) {
+            if (helper[firstIndex] > helper[secondIndex]) {
+                array[arrayIndex] = helper[secondIndex];
+                ++secondIndex;
+                // leave firstIndex in place
+            } else {
+                array[arrayIndex] = helper[firstIndex];
+                ++firstIndex;
+                // leave firstIndex in place
+            }
+            ++arrayIndex;
+        }
+
+        // copy over all the rest
+        while (firstIndex <= mid) {
+            array[arrayIndex] = helper[firstIndex];
+            ++firstIndex;
+            ++arrayIndex;
+        }
+
+        // The below is never needed as the left part is already in array (recall that we copied array into helper, so helper and array
+        // are the same for the left part.
+        /*
+        while (secondIndex <= end) {
+            array[arrayIndex] = helper[secondIndex];
+            ++secondIndex;
+            ++arrayIndex;
+        }
+        */
+    }
 }
