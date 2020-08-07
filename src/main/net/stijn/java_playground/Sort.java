@@ -137,4 +137,65 @@ public class Sort {
         }
         */
     }
+
+    /**
+     * Quick sort on array.
+     *
+     * @param array the array to merge sort.
+     */
+    public static void quickSort(int[] array) {
+        if (array.length <= 1) {
+            return;
+        }
+        quickSortHelper(array, 0, array.length - 1);
+    }
+
+    /**
+     * Sort everything before the pivot, and everything after.
+     *
+     * @param array the array to sort
+     * @param start the start
+     * @param end the end
+     */
+    private static void quickSortHelper(int[] array, int start, int end) {
+        int partitionIndex = partition(array, start, end);
+
+        if (start < partitionIndex) {
+            quickSortHelper(array, start, partitionIndex);
+        }
+        if (partitionIndex + 1 < end) {
+            quickSortHelper(array, partitionIndex + 1, end);
+        }
+    }
+
+    private static int partition(int[] array, int start, int end) {
+        int partitionIndex = (start + end) / 2;
+        int pivot = array[partitionIndex];
+
+        int front = 0;
+        int back = end;
+
+        // find the first wrong element from both sides and swap and do this until all is good
+        while (front < back) {
+            // move front until something is larger than pivot. Note that you don't test for <= that could move front
+            // past the array index leading to an IndexOutOfBounds
+            while (array[front] < pivot) {
+                ++front;
+            }
+
+            // move back until something is smaller than pivot
+            while (array[back] > pivot) {
+                --back;
+            }
+
+            // if front moved past back you're all good; if not, swap
+            if (front < back) {
+                int swap = array[back];
+                array[back] = array[front];
+                array[front] = swap;
+            }
+        }
+
+        return partitionIndex;
+    }
 }

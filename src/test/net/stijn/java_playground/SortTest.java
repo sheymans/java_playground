@@ -71,4 +71,25 @@ class SortTest {
         Sort.mergeSort(a);
         assertTrue(Sort.isSorted(a));
     }
+
+    @Test
+    void quickSort() {
+        int[] a = {1, 2, 3, 6, 8};
+        Sort.quickSort(a);
+        assertTrue(Sort.isSorted(a));
+        int[] b = {1, 2, 3, 6, 5};
+        assertFalse(Sort.isSorted(b));
+        Sort.quickSort(b);
+        assertTrue(Sort.isSorted(b));
+        int[] c = {5, 4, 3, 2, 1};
+        Sort.quickSort(c);
+        assertTrue(Sort.isSorted(c));
+    }
+
+    @Test
+    void quickSortShort() {
+        int[] a = {9, 6};
+        Sort.quickSort(a);
+        assertTrue(Sort.isSorted(a));
+    }
 }
