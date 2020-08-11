@@ -26,4 +26,17 @@ class BinarySearchTest {
         assertThrows(IllegalArgumentException.class, () -> BinarySearch.binarySearch(x, a));
     }
 
+    @Test
+    void binarySearchIterative() {
+        int[] a = {1, 4, 6, 10};
+        int x = 6;
+        assertEquals(2, BinarySearch.binarySearchIterative(x, a));
+        int[] b = {1, 4, 6, 10};
+        int y = 10;
+        assertEquals(3, BinarySearch.binarySearchIterative(y, b));
+        int[] c = {1, 4, 6, 10};
+        int z = 11;
+        assertEquals(-1, BinarySearch.binarySearchIterative(z, c));
+    }
+
 }

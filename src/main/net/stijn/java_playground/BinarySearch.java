@@ -34,4 +34,32 @@ public class BinarySearch {
         }
         return binarySearchHelper(x, array, mid + 1, end);
     }
+
+    /**
+     * Iterative version of {@link BinarySearch#binarySearch(int, int[])}.
+     *
+     * @param x the element to look for
+     * @param array the array to look in
+     * @return the index of x if found, or -1 if not
+     */
+    public static int binarySearchIterative(int x, int[] array) {
+        int start = 0;
+        int end = array.length - 1;
+
+        while (start <= end) {
+            int mid = (start + end) / 2;
+            int guess = array[mid];
+
+            if (guess == x) {
+                return mid;
+            }
+            if (guess < x) {
+                start = mid + 1;
+            }
+            else {
+                end = mid - 1;
+            }
+        }
+        return -1;
+    }
 }
