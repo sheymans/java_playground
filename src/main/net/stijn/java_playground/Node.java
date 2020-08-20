@@ -83,4 +83,44 @@ public class Node {
         }
         return Optional.empty();
     }
+
+    /**
+     * Get the shortest path from this node to an end node. This just a BFS however, the difficulty is in collecting the
+     * shortest path on the way. Some options are: (1) store in each node you visit its parent (a graph would not have 1 parent necessarily, but
+     * since you're running through the graph in a tree-like fashion that would work; (2) store instead of nodes you visit
+     * on the queue, the full current shortest path that you are traversing and always investigate the last node of the path.
+     *
+     * @param end the Node you want to find a shortest path to
+     * @return a {@link List} with the shortest path to the node.
+     */
+    public List<Node> shortestPath(Node end) {
+        Queue<List<Node>> queue = new LinkedList<>();
+        Set<Node> visited = new HashSet<>();
+
+        // The starting path
+        List<Node> startingPath = new ArrayList<>();
+        startingPath.add(this);
+
+        queue.add(startingPath);
+
+        while (!queue.isEmpty()) {
+            List<Node> thisPath = queue.remove();
+            Node lastNodeOnPath = thisPath.get(thisPath.size() - 1);
+            if (visited.contains(lastNodeOnPath)) {
+                continue;
+            }
+            visited.add(lastNodeOnPath);
+            if (lastNodeOnPath.equals(end)) {
+                return thisPath;
+            }
+            // add new set of paths to explore (one new path for each child, so (a b) adds (a b b1) (a b b2) ...
+            for (Node child: lastNodeOnPath.children) {
+                List<Node> newChildPath = new ArrayList<>(thisPath);
+                newChildPath.add(child);
+                queue.add(newChildPath);
+            }
+        }
+        // return an empty one if you have not found anything
+        return new ArrayList<>();
+    }
 }
